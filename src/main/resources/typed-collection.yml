@@ -1,0 +1,18 @@
+project:
+  teams:
+    TEAM1:
+      id: 1
+      name: Backend team
+      board-id: 1001
+    TEAM2:
+      id: 2
+      name: Frontend team
+      board-id: 1002
+    AUTOMATION:
+      id: 3
+      name: Automation team
+      board-id: 1003
+    DEVOPS:
+      id: 4
+      name: DevOps team
+      board-id: 1004
