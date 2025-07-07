@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
 import java.util.Map;
 
 public class App {
@@ -24,9 +23,9 @@ public class App {
             System.out.println(YamlReadUtils.readYaml(inputStream2));
             System.out.println(YamlReadUtils.readYaml(inputStream3));
 
+            System.out.println(YamlReadUtils.readYaml(inputStream3, Map.class));
             System.out.println(YamlReadUtils.readYaml(inputStream1, IssueTrackerSettings.class));
-            Map<String, TeamSettings> teams = new HashMap<>();
-            System.out.println(YamlReadUtils.readYaml(inputStream1, teams.getClass()));
+            System.out.println(YamlReadUtils.readYaml(inputStream2, ProjectTeams.class));
         } catch (IOException | URISyntaxException e) {
             throw new RuntimeException(e);
         }

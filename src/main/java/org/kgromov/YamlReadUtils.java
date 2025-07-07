@@ -45,6 +45,7 @@ public class YamlReadUtils {
 
     public static <T> T readYaml(InputStream inputStream, Class<T> clazz) {
         T result = new Yaml().loadAs(inputStream, clazz);
+//        T result = new Yaml(new Constructor(clazz, new LoaderOptions())).load(inputStream);
         return result;
     }
 
