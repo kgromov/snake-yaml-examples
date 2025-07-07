@@ -1,18 +1,14 @@
 package org.kgromov;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.util.List;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class ProjectTeams {
     private List<TeamSettings> teams;
-
-    public ProjectTeams() {
-    }
-
-    public List<TeamSettings> getTeams() {
-        return teams;
-    }
-
-    public void setTeams(List<TeamSettings> teams) {
-        this.teams = teams;
-    }
 }
