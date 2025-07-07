@@ -1,5 +1,13 @@
 package org.kgromov;
 
+import com.sun.tools.javac.Main;
+import org.yaml.snakeyaml.DumperOptions;
+import org.yaml.snakeyaml.LoaderOptions;
+import org.yaml.snakeyaml.TypeDescription;
+import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.constructor.Constructor;
+import org.yaml.snakeyaml.representer.Representer;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
@@ -13,18 +21,34 @@ public class App {
         try (InputStream inputStream1 = resourcesClassLoader.getResourceAsStream("dummy.yml");
              InputStream inputStream2 = resourcesClassLoader.getResourceAsStream("typed-sample.yml");
              InputStream inputStream3 = resourcesClassLoader.getResourceAsStream("typed-collection.yml")) {
-
+            // read from String instead of InputStream
             Path path = Path.of(resourcesClassLoader.getResource("typed-sample.yml").toURI());
             System.out.println(YamlReadUtils.readYaml(path));
             var content = String.join("\n", Files.readAllLines(path));
             System.out.println(YamlReadUtils.readYaml(content));
-
+            // Implicit types - LinkedHashMap
 //            System.out.println(YamlReadUtils.readYaml(inputStream1));
 //            System.out.println(YamlReadUtils.readYaml(inputStream2));
 //            System.out.println(YamlReadUtils.readYaml(inputStream3));
+            // how to map differ to camelCase strategy
+            TypeDescription typeDescription = new TypeDescription(IssueTrackerSettings.class);
+            typeDescription.substituteProperty("base-url", String.class, "getBaseUrl", "setBaseUrl");
+            typeDescription.substituteProperty("project-key", String.class, "getProjectKey", "setProjectKey");
+            typeDescription.substituteProperty("project-name", String.class, "getProjectName", "setProjectName");
+            typeDescription.setExcludes("baseUrl", "projectKey", "projectName");
+
+            Constructor constructor = new Constructor(IssueTrackerSettings.class, new LoaderOptions());
+            constructor.addTypeDescription(typeDescription);
+
+            Representer representer = new Representer(new DumperOptions());
+            representer.addTypeDescription(typeDescription);
+
+            Yaml yaml = new Yaml(constructor);
+            IssueTrackerSettings projectSettings = yaml.loadAs(inputStream2, IssueTrackerSettings.class);
+            System.out.println(projectSettings);
 
             System.out.println(YamlReadUtils.readYaml(inputStream1, Map.class));
-            System.out.println(YamlReadUtils.readYaml(inputStream2, IssueTrackerSettings.class));
+//            System.out.println(YamlReadUtils.readYaml(inputStream2, IssueTrackerSettings.class));
             System.out.println(YamlReadUtils.readYaml(inputStream3, ProjectTeams.class));
         } catch (IOException | URISyntaxException e) {
             throw new RuntimeException(e);
