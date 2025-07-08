@@ -8,6 +8,7 @@ import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 import org.yaml.snakeyaml.representer.Representer;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
@@ -15,8 +16,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
 
+// TODO: move to unit tests
 public class App {
     public static void main(String[] args) {
+        //        File path = new File(YamlWriteUtils.class.getResource("App.class").getPath());
+        Path target = new File(YamlWriteUtils.class.getProtectionDomain().getCodeSource().getLocation().getPath())
+                .getParentFile().toPath();
+//        String property = System.getProperty("java.class.path");
         ClassLoader resourcesClassLoader = YamlReadUtils.class.getClassLoader();
         try (InputStream inputStream1 = resourcesClassLoader.getResourceAsStream("dummy.yml");
              InputStream inputStream2 = resourcesClassLoader.getResourceAsStream("typed-sample.yml");
@@ -40,16 +46,25 @@ public class App {
             Constructor constructor = new Constructor(IssueTrackerSettings.class, new LoaderOptions());
             constructor.addTypeDescription(typeDescription);
 
-            Representer representer = new Representer(new DumperOptions());
+            DumperOptions options = new DumperOptions();
+            options.setPrettyFlow(true);
+            options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
+            Representer representer = new Representer(options);
             representer.addTypeDescription(typeDescription);
 
-            Yaml yaml = new Yaml(constructor);
+            Yaml yaml = new Yaml(constructor, representer, options);
             IssueTrackerSettings projectSettings = yaml.loadAs(inputStream2, IssueTrackerSettings.class);
+            YamlWriteUtils.writeYaml(projectSettings, target.resolve("typed-sample_1.yml"));
+            YamlWriteUtils.writeYaml2(projectSettings, target.resolve("typed-sample_2.yml"));
+            YamlWriteUtils.writeYaml3(projectSettings, target.resolve("typed-sample_3.yml"));
+            YamlWriteUtils.writeYaml4(projectSettings, yaml, target.resolve("typed-sample_4.yml"));
             System.out.println(projectSettings);
 
             System.out.println(YamlReadUtils.readYaml(inputStream1, Map.class));
 //            System.out.println(YamlReadUtils.readYaml(inputStream2, IssueTrackerSettings.class));
-            System.out.println(YamlReadUtils.readYaml(inputStream3, ProjectTeams.class));
+            ProjectTeams projectTeams = YamlReadUtils.readYaml(inputStream3, ProjectTeams.class);
+            YamlWriteUtils.writeYaml(projectTeams, target.resolve("project-teams_1.yml"));
+            System.out.println(projectTeams);
         } catch (IOException | URISyntaxException e) {
             throw new RuntimeException(e);
         }
