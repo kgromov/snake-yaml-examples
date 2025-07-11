@@ -1,10 +1,13 @@
 package org.kgromov;
 
 import com.sun.tools.javac.Main;
+import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.LoaderOptions;
+import org.yaml.snakeyaml.TypeDescription;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 import org.yaml.snakeyaml.nodes.Tag;
+import org.yaml.snakeyaml.representer.Representer;
 
 import java.io.*;
 import java.net.URL;
@@ -44,4 +47,22 @@ public class YamlWriteUtils {
         String yamlContent = yaml.dumpAs(object, Tag.MAP, null);
         Files.write(path, yamlContent.getBytes());
     }
+
+
+    public static <T> void writeYaml(T object,
+                                     Class<T> clazz,
+                                     TypeDescription typeDescription,
+                                     DumperOptions options,
+                                     Path path) throws IOException {
+        Constructor constructor = new Constructor(clazz, new LoaderOptions());
+        constructor.addTypeDescription(typeDescription);
+
+        Representer representer = new Representer(options);
+        representer.addTypeDescription(typeDescription);
+
+        Yaml yaml = new Yaml(constructor, representer, options);
+        String yamlContent = yaml.dumpAs(object, Tag.MAP, options.getDefaultFlowStyle());
+        Files.write(path, yamlContent.getBytes());
+    }
+
 }

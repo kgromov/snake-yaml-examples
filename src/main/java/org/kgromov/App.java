@@ -58,6 +58,13 @@ public class App {
             YamlWriteUtils.writeYaml2(projectSettings, target.resolve("typed-sample_2.yml"));
             YamlWriteUtils.writeYaml3(projectSettings, target.resolve("typed-sample_3.yml"));
             YamlWriteUtils.writeYaml4(projectSettings, yaml, target.resolve("typed-sample_4.yml"));
+            YamlWriteUtils.writeYaml(
+                    projectSettings,
+                    IssueTrackerSettings.class,
+                    typeDescription,
+                    options,
+                    target.resolve("typed-sample_5.yml")
+            );
             System.out.println(projectSettings);
 
             System.out.println(YamlReadUtils.readYaml(inputStream1, Map.class));
