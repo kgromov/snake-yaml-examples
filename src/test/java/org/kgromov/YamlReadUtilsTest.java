@@ -1,6 +1,8 @@
 package org.kgromov;
 
 import org.junit.jupiter.api.Test;
+import org.yaml.snakeyaml.LoaderOptions;
+import org.yaml.snakeyaml.TypeDescription;
 import org.yaml.snakeyaml.error.YAMLException;
 
 import java.nio.file.Path;
@@ -30,7 +32,19 @@ class YamlReadUtilsTest {
 
     @Test
     void readYaml_WithPathAndClass_ShouldReturnTypedObject() {
-        IssueTrackerSettings settings = YamlReadUtils.readYaml(Path.of(TYPED_SAMPLE), IssueTrackerSettings.class);
+        TypeDescription typeDescription = new TypeDescription(IssueTrackerSettings.class);
+        typeDescription.substituteProperty("base-url", String.class, "getBaseUrl", "setBaseUrl");
+        typeDescription.substituteProperty("project-key", String.class, "getProjectKey", "setProjectKey");
+        typeDescription.substituteProperty("project-name", String.class, "getProjectName", "setProjectName");
+        typeDescription.setExcludes("baseUrl", "projectKey", "projectName");
+
+        IssueTrackerSettings settings = YamlReadUtils.readYaml(
+                Path.of(TYPED_SAMPLE),
+                IssueTrackerSettings.class,
+                typeDescription,
+                new LoaderOptions()
+        );
+
         assertThat(settings).isNotNull();
         assertThat(settings.getBaseUrl()).isEqualTo("http://127.0.0.1:8080");
         assertThat(settings.getProjectKey()).isEqualTo("PROJ");

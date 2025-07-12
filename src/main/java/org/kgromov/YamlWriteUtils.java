@@ -1,6 +1,5 @@
 package org.kgromov;
 
-import com.sun.tools.javac.Main;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.TypeDescription;
@@ -9,8 +8,9 @@ import org.yaml.snakeyaml.constructor.Constructor;
 import org.yaml.snakeyaml.nodes.Tag;
 import org.yaml.snakeyaml.representer.Representer;
 
-import java.io.*;
-import java.net.URL;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -47,7 +47,6 @@ public class YamlWriteUtils {
         String yamlContent = yaml.dumpAs(object, Tag.MAP, null);
         Files.write(path, yamlContent.getBytes());
     }
-
 
     public static <T> void writeYaml(T object,
                                      Class<T> clazz,

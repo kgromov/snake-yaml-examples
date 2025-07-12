@@ -1,7 +1,6 @@
 package org.kgromov;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.yaml.snakeyaml.DumperOptions;
@@ -38,7 +37,6 @@ class YamlWriteUtilsTest {
         ));
     }
 
-    @Disabled
     @Test
     void writeYaml_ShouldWriteObjectToFile() throws IOException {
         Path outputFile = tempDir.resolve("output.yml");
@@ -46,23 +44,23 @@ class YamlWriteUtilsTest {
         
         assertThat(outputFile).exists();
         String content = Files.readString(outputFile);
-        assertThat(content).contains("baseUrl: http://test.url");
+        assertThat(content).contains("baseUrl: 'http://test.url'")
+                .contains("projectKey: TEST")
+                .contains("projectName: Test Project");
     }
 
-    @Disabled
     @Test
-    void writeYaml_WithDifferentMethods_ShouldProduceSimilarOutput() throws IOException {
-        Path output1 = tempDir.resolve("output1.yml");
-        Path output2 = tempDir.resolve("output2.yml");
+    void writeYaml2_WithDifferentMethods_ShouldProduceSimilarOutputAndContainsType() throws IOException {
+        Path output = tempDir.resolve("output.yml");
 
-        YamlWriteUtils.writeYaml(testSettings, output1);
-        YamlWriteUtils.writeYaml2(testSettings, output2);
+        YamlWriteUtils.writeYaml2(testSettings, output);
         
-        String content1 = Files.readString(output1);
-        String content2 = Files.readString(output2);
+        String content = Files.readString(output);
         
-        assertThat(content1.replaceAll("\r\n", "\n"))
-                .isEqualToIgnoringWhitespace(content2.replaceAll("\r\n", "\n"));
+        assertThat(content).startsWith("!!" + IssueTrackerSettings.class.getName());
+        assertThat(content).contains("baseUrl: 'http://test.url'");
+        assertThat(content).contains("projectKey: TEST");
+        assertThat(content).contains("projectName: Test Project");
     }
     
     @Test

@@ -1,6 +1,7 @@
 package org.kgromov;
 
 import org.yaml.snakeyaml.LoaderOptions;
+import org.yaml.snakeyaml.TypeDescription;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
@@ -43,12 +44,30 @@ public class YamlReadUtils {
     }
 
     public static <T> T readYaml(InputStream inputStream, Class<T> clazz) {
-        T result = new Yaml().loadAs(inputStream, clazz);
-        return result;
+        return new Yaml().loadAs(inputStream, clazz);
     }
 
     public static <T> T readYaml(String yamlContent, Class<T> clazz) {
-        T result = new Yaml(new Constructor(clazz, new LoaderOptions())).load(yamlContent);
-        return result;
+        return new Yaml(new Constructor(clazz, new LoaderOptions())).load(yamlContent);
+    }
+
+    public static <T> T readYaml(Path path,
+                                 Class<T> clazz,
+                                 TypeDescription typeDescription,
+                                 LoaderOptions options) {
+        try (InputStream inputStream = Files.newInputStream(path)) {
+            return readYaml(inputStream, clazz, typeDescription, options);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static <T> T readYaml(InputStream inputStream,
+                                 Class<T> clazz,
+                                 TypeDescription typeDescription,
+                                 LoaderOptions options) {
+        Constructor constructor = new Constructor(clazz, options);
+        constructor.addTypeDescription(typeDescription);
+        return new Yaml(constructor).loadAs(inputStream, clazz);
     }
 }
