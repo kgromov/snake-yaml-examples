@@ -1,0 +1,11 @@
+teams:
+  - id: 1
+    name: Backend team
+    boardId: 1001
+  - id: 2
+    name: Frontend team
+    boardId: 1002
+  - id: 3
+    name: Automation team
+    boardId: 1003
+  - {id: 4, name: DevOps team, boardId: 1004} # compact form
