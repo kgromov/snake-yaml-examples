@@ -1,7 +1,7 @@
 package org.kgromov;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.yaml.snakeyaml.error.YAMLException;
 
 import java.nio.file.Path;
 
@@ -28,7 +28,6 @@ class YamlReadUtilsTest {
         assertThat(result).contains("key=value");
     }
 
-    @Disabled
     @Test
     void readYaml_WithPathAndClass_ShouldReturnTypedObject() {
         IssueTrackerSettings settings = YamlReadUtils.readYaml(Path.of(TYPED_SAMPLE), IssueTrackerSettings.class);
@@ -48,12 +47,11 @@ class YamlReadUtilsTest {
                 .containsExactly("Backend team", "Frontend team", "Automation team", "DevOps team");
     }
 
-    @Disabled
+
     @Test
     void readYaml_WithInvalidYaml_ShouldThrowException() {
         String invalidYaml = "invalid: yaml: content";
         assertThatThrownBy(() -> YamlReadUtils.readYaml(invalidYaml))
-                .isInstanceOf(RuntimeException.class)
-                .hasCauseInstanceOf(Throwable.class);
+                .isInstanceOf(YAMLException.class);
     }
 }
