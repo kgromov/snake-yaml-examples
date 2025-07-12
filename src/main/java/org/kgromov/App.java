@@ -1,6 +1,10 @@
 package org.kgromov;
 
-import com.sun.tools.javac.Main;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
+import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.TypeDescription;
@@ -16,7 +20,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
 
-// TODO: move to unit tests
 public class App {
     public static void main(String[] args) {
         //        File path = new File(YamlWriteUtils.class.getResource("App.class").getPath());
@@ -29,6 +32,7 @@ public class App {
              InputStream inputStream3 = resourcesClassLoader.getResourceAsStream("typed-collection.yml")) {
             // read from String instead of InputStream
             Path path = Path.of(resourcesClassLoader.getResource("typed-sample.yml").toURI());
+            System.out.println("\n################# SnakeYaml #################");
             System.out.println(YamlReadUtils.readYaml(path));
             var content = String.join("\n", Files.readAllLines(path));
             System.out.println(YamlReadUtils.readYaml(content));
@@ -72,6 +76,25 @@ public class App {
             ProjectTeams projectTeams = YamlReadUtils.readYaml(inputStream3, ProjectTeams.class);
             YamlWriteUtils.writeYaml(projectTeams, target.resolve("project-teams_1.yml"));
             System.out.println(projectTeams);
+
+            // jackson
+            System.out.println("\n################# Jackson Yaml #################");
+            ObjectMapper mapper = YAMLMapper.builder()
+                    .disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER)
+                    .build();
+            var trackerSettings = mapper.readValue(resourcesClassLoader.getResourceAsStream("typed-sample.yml"), IssueTrackerSettings.class);
+            var teams = mapper.readValue(resourcesClassLoader.getResourceAsStream("typed-collection.yml"), ProjectTeams.class);
+            System.out.println(trackerSettings);
+            System.out.println(teams);
+            // the same with factory
+            ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
+            // does not work for deserialization
+            objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
+            IssueTrackerSettings trackerSettings2 = objectMapper.readValue(resourcesClassLoader.getResourceAsStream("typed-sample.yml"), IssueTrackerSettings.class);
+            System.out.println(trackerSettings2);
+
+            mapper.writerFor(IssueTrackerSettings.class)
+                    .writeValue(System.out, trackerSettings);
         } catch (IOException | URISyntaxException e) {
             throw new RuntimeException(e);
         }
