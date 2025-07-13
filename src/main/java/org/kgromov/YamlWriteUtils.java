@@ -1,5 +1,6 @@
 package org.kgromov;
 
+import lombok.experimental.UtilityClass;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.TypeDescription;
@@ -14,11 +15,8 @@ import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+@UtilityClass
 public class YamlWriteUtils {
-
-    private YamlWriteUtils() {
-        throw new UnsupportedOperationException("Utility class cannot be instantiated");
-    }
 
     public static <T> void writeYaml(T object, Path path) throws IOException {
         Yaml yaml = new Yaml(new Constructor(object.getClass(), new LoaderOptions()));

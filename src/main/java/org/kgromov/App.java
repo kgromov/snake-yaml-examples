@@ -3,6 +3,7 @@ package org.kgromov;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactoryBuilder;
 import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import org.yaml.snakeyaml.DumperOptions;
@@ -79,22 +80,35 @@ public class App {
 
             // jackson
             System.out.println("\n################# Jackson Yaml #################");
-            ObjectMapper mapper = YAMLMapper.builder()
+            var builder = YAMLMapper.builder()
                     .disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER)
-                    .build();
-            var trackerSettings = mapper.readValue(resourcesClassLoader.getResourceAsStream("typed-sample.yml"), IssueTrackerSettings.class);
-            var teams = mapper.readValue(resourcesClassLoader.getResourceAsStream("typed-collection.yml"), ProjectTeams.class);
+                    .enable(YAMLGenerator.Feature.MINIMIZE_QUOTES);
+            var trackerSettings = JacksonYamlReadUtils.readYaml(
+                    resourcesClassLoader.getResourceAsStream("typed-sample.yml"),
+                    IssueTrackerSettings.class,
+                    builder
+            );
+            var teams = JacksonYamlReadUtils.readYaml(
+                    resourcesClassLoader.getResourceAsStream("typed-collection.yml"),
+                    ProjectTeams.class,
+                    builder
+            );
             System.out.println(trackerSettings);
             System.out.println(teams);
+            IssueTrackerSettings trackerSettings2 = JacksonYamlReadUtils.readYaml(
+                    resourcesClassLoader.getResourceAsStream("typed-sample.yml"),
+                    IssueTrackerSettings.class);
+            System.out.println(trackerSettings2);
+
             // the same with factory
+            YAMLFactoryBuilder factoryBuilder = YAMLFactory.builder().dumperOptions(options);
             ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
             // does not work for deserialization
             objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
-            IssueTrackerSettings trackerSettings2 = objectMapper.readValue(resourcesClassLoader.getResourceAsStream("typed-sample.yml"), IssueTrackerSettings.class);
-            System.out.println(trackerSettings2);
 
-            mapper.writerFor(IssueTrackerSettings.class)
-                    .writeValue(System.out, trackerSettings);
+            JacksonYamlWriteUtils.writeYaml(trackerSettings, target.resolve("typed-sample_jackson_1.yml"));
+            JacksonYamlWriteUtils.writeYaml(trackerSettings, target.resolve("typed-sample_jackson_2.yml"), builder);
+            JacksonYamlWriteUtils.writeYaml(projectTeams, target.resolve("typed-sample_jackson_3.yml"), factoryBuilder);
         } catch (IOException | URISyntaxException e) {
             throw new RuntimeException(e);
         }

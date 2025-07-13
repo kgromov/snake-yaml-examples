@@ -20,6 +20,7 @@
     </properties>
 
     <dependencies>
+        <!-- actually can be used as transitive dependency jackson-dataformat-yaml which is wrapper on top of snakeyaml -->
         <dependency>
             <groupId>org.yaml</groupId>
             <artifactId>snakeyaml</artifactId>

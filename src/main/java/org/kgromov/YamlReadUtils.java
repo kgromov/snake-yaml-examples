@@ -1,5 +1,6 @@
 package org.kgromov;
 
+import lombok.experimental.UtilityClass;
 import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.TypeDescription;
 import org.yaml.snakeyaml.Yaml;
@@ -10,11 +11,8 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+@UtilityClass
 public class YamlReadUtils {
-
-    private YamlReadUtils() {
-        throw new UnsupportedOperationException("Utility class cannot be instantiated");
-    }
 
     public static String readYaml(Path path) {
         try (InputStream inputStream = Files.newInputStream(path)) {
