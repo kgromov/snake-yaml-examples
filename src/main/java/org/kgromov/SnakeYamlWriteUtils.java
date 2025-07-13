@@ -16,7 +16,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 @UtilityClass
-public class YamlWriteUtils {
+public class SnakeYamlWriteUtils {
 
     public static <T> void writeYaml(T object, Path path) throws IOException {
         Yaml yaml = new Yaml(new Constructor(object.getClass(), new LoaderOptions()));

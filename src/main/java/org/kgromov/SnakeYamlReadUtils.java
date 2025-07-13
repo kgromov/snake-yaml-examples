@@ -12,7 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 @UtilityClass
-public class YamlReadUtils {
+public class SnakeYamlReadUtils {
 
     public static String readYaml(Path path) {
         try (InputStream inputStream = Files.newInputStream(path)) {

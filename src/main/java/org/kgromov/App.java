@@ -24,19 +24,19 @@ import java.util.Map;
 public class App {
     public static void main(String[] args) {
         //        File path = new File(YamlWriteUtils.class.getResource("App.class").getPath());
-        Path target = new File(YamlWriteUtils.class.getProtectionDomain().getCodeSource().getLocation().getPath())
+        Path target = new File(SnakeYamlWriteUtils.class.getProtectionDomain().getCodeSource().getLocation().getPath())
                 .getParentFile().toPath();
 //        String property = System.getProperty("java.class.path");
-        ClassLoader resourcesClassLoader = YamlReadUtils.class.getClassLoader();
+        ClassLoader resourcesClassLoader = SnakeYamlReadUtils.class.getClassLoader();
         try (InputStream inputStream1 = resourcesClassLoader.getResourceAsStream("dummy.yml");
              InputStream inputStream2 = resourcesClassLoader.getResourceAsStream("typed-sample.yml");
              InputStream inputStream3 = resourcesClassLoader.getResourceAsStream("typed-collection.yml")) {
             // read from String instead of InputStream
             Path path = Path.of(resourcesClassLoader.getResource("typed-sample.yml").toURI());
             System.out.println("\n################# SnakeYaml #################");
-            System.out.println(YamlReadUtils.readYaml(path));
+            System.out.println(SnakeYamlReadUtils.readYaml(path));
             var content = String.join("\n", Files.readAllLines(path));
-            System.out.println(YamlReadUtils.readYaml(content));
+            System.out.println(SnakeYamlReadUtils.readYaml(content));
             // Implicit types - LinkedHashMap
 //            System.out.println(YamlReadUtils.readYaml(inputStream1));
 //            System.out.println(YamlReadUtils.readYaml(inputStream2));
@@ -59,11 +59,11 @@ public class App {
 
             Yaml yaml = new Yaml(constructor, representer, options);
             IssueTrackerSettings projectSettings = yaml.loadAs(inputStream2, IssueTrackerSettings.class);
-            YamlWriteUtils.writeYaml(projectSettings, target.resolve("typed-sample_1.yml"));
-            YamlWriteUtils.writeYaml2(projectSettings, target.resolve("typed-sample_2.yml"));
-            YamlWriteUtils.writeYaml3(projectSettings, target.resolve("typed-sample_3.yml"));
-            YamlWriteUtils.writeYaml4(projectSettings, yaml, target.resolve("typed-sample_4.yml"));
-            YamlWriteUtils.writeYaml(
+            SnakeYamlWriteUtils.writeYaml(projectSettings, target.resolve("typed-sample_1.yml"));
+            SnakeYamlWriteUtils.writeYaml2(projectSettings, target.resolve("typed-sample_2.yml"));
+            SnakeYamlWriteUtils.writeYaml3(projectSettings, target.resolve("typed-sample_3.yml"));
+            SnakeYamlWriteUtils.writeYaml4(projectSettings, yaml, target.resolve("typed-sample_4.yml"));
+            SnakeYamlWriteUtils.writeYaml(
                     projectSettings,
                     IssueTrackerSettings.class,
                     typeDescription,
@@ -72,10 +72,10 @@ public class App {
             );
             System.out.println(projectSettings);
 
-            System.out.println(YamlReadUtils.readYaml(inputStream1, Map.class));
+            System.out.println(SnakeYamlReadUtils.readYaml(inputStream1, Map.class));
 //            System.out.println(YamlReadUtils.readYaml(inputStream2, IssueTrackerSettings.class));
-            ProjectTeams projectTeams = YamlReadUtils.readYaml(inputStream3, ProjectTeams.class);
-            YamlWriteUtils.writeYaml(projectTeams, target.resolve("project-teams_1.yml"));
+            ProjectTeams projectTeams = SnakeYamlReadUtils.readYaml(inputStream3, ProjectTeams.class);
+            SnakeYamlWriteUtils.writeYaml(projectTeams, target.resolve("project-teams_1.yml"));
             System.out.println(projectTeams);
 
             // jackson

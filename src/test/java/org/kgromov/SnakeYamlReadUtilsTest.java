@@ -10,7 +10,7 @@ import java.nio.file.Path;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class YamlReadUtilsTest {
+class SnakeYamlReadUtilsTest {
 
     private static final String TEST_RESOURCES = "src/test/resources/";
     private static final String TYPED_SAMPLE = TEST_RESOURCES + "typed-sample.yml";
@@ -19,14 +19,14 @@ class YamlReadUtilsTest {
 
     @Test
     void readYaml_WithPath_ShouldReturnContent() {
-        String content = YamlReadUtils.readYaml(Path.of(DUMMY_YML));
+        String content = SnakeYamlReadUtils.readYaml(Path.of(DUMMY_YML));
         assertThat(content).isNotNull().isNotEmpty();
     }
 
     @Test
     void readYaml_WithStringContent_ShouldReturnContent() {
         String yamlContent = "key: value\nnumber: 42";
-        String result = YamlReadUtils.readYaml(yamlContent);
+        String result = SnakeYamlReadUtils.readYaml(yamlContent);
         assertThat(result).contains("key=value");
     }
 
@@ -38,7 +38,7 @@ class YamlReadUtilsTest {
         typeDescription.substituteProperty("project-name", String.class, "getProjectName", "setProjectName");
         typeDescription.setExcludes("baseUrl", "projectKey", "projectName");
 
-        IssueTrackerSettings settings = YamlReadUtils.readYaml(
+        IssueTrackerSettings settings = SnakeYamlReadUtils.readYaml(
                 Path.of(TYPED_SAMPLE),
                 IssueTrackerSettings.class,
                 typeDescription,
@@ -53,7 +53,7 @@ class YamlReadUtilsTest {
 
     @Test
     void readYaml_WithCollection_ShouldReturnTypedCollection() {
-        ProjectTeams projectTeams = YamlReadUtils.readYaml(Path.of(TYPED_COLLECTION), ProjectTeams.class);
+        ProjectTeams projectTeams = SnakeYamlReadUtils.readYaml(Path.of(TYPED_COLLECTION), ProjectTeams.class);
         assertThat(projectTeams).isNotNull();
         assertThat(projectTeams.getTeams())
                 .hasSize(4)
@@ -65,7 +65,7 @@ class YamlReadUtilsTest {
     @Test
     void readYaml_WithInvalidYaml_ShouldThrowException() {
         String invalidYaml = "invalid: yaml: content";
-        assertThatThrownBy(() -> YamlReadUtils.readYaml(invalidYaml))
+        assertThatThrownBy(() -> SnakeYamlReadUtils.readYaml(invalidYaml))
                 .isInstanceOf(YAMLException.class);
     }
 }

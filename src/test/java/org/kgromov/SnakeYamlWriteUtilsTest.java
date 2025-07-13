@@ -15,7 +15,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class YamlWriteUtilsTest {
+class SnakeYamlWriteUtilsTest {
 
     @TempDir
     Path tempDir;
@@ -40,7 +40,7 @@ class YamlWriteUtilsTest {
     @Test
     void writeYaml_ShouldWriteObjectToFile() throws IOException {
         Path outputFile = tempDir.resolve("output.yml");
-        YamlWriteUtils.writeYaml(testSettings, outputFile);
+        SnakeYamlWriteUtils.writeYaml(testSettings, outputFile);
         
         assertThat(outputFile).exists();
         String content = Files.readString(outputFile);
@@ -53,7 +53,7 @@ class YamlWriteUtilsTest {
     void writeYaml2_WithDifferentMethods_ShouldProduceSimilarOutputAndContainsType() throws IOException {
         Path output = tempDir.resolve("output.yml");
 
-        YamlWriteUtils.writeYaml2(testSettings, output);
+        SnakeYamlWriteUtils.writeYaml2(testSettings, output);
         
         String content = Files.readString(output);
         
@@ -77,7 +77,7 @@ class YamlWriteUtilsTest {
         options.setPrettyFlow(true);
         options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
         
-        YamlWriteUtils.writeYaml(
+        SnakeYamlWriteUtils.writeYaml(
                 testSettings,
                 IssueTrackerSettings.class,
                 typeDescription,
@@ -94,7 +94,7 @@ class YamlWriteUtilsTest {
     @Test
     void writeYaml_WithCollection_ShouldWriteAllItems() throws IOException {
         Path outputFile = tempDir.resolve("teams_output.yml");
-        YamlWriteUtils.writeYaml(testTeams, outputFile);
+        SnakeYamlWriteUtils.writeYaml(testTeams, outputFile);
         
         String content = Files.readString(outputFile);
         assertThat(content).contains("Team A").contains("Team B");
@@ -106,7 +106,7 @@ class YamlWriteUtilsTest {
     @Test
     void writeYaml_WithNullObject_ShouldThrowException() {
         Path outputFile = tempDir.resolve("null_output.yml");
-        assertThatThrownBy(() -> YamlWriteUtils.writeYaml(null, outputFile))
+        assertThatThrownBy(() -> SnakeYamlWriteUtils.writeYaml(null, outputFile))
                 .isInstanceOf(NullPointerException.class);
     }
 }

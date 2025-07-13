@@ -30,10 +30,10 @@ class AppIntegrationTest {
                 new TeamSettings(1, "Integration Team", 1001)
         ));
 
-        YamlWriteUtils.writeYaml(settings, testYaml);
-        YamlWriteUtils.writeYaml(teams, testCollectionYaml);
-        IssueTrackerSettings readSettings = YamlReadUtils.readYaml(testYaml, IssueTrackerSettings.class);
-        ProjectTeams readTeams = YamlReadUtils.readYaml(testCollectionYaml, ProjectTeams.class);
+        SnakeYamlWriteUtils.writeYaml(settings, testYaml);
+        SnakeYamlWriteUtils.writeYaml(teams, testCollectionYaml);
+        IssueTrackerSettings readSettings = SnakeYamlReadUtils.readYaml(testYaml, IssueTrackerSettings.class);
+        ProjectTeams readTeams = SnakeYamlReadUtils.readYaml(testCollectionYaml, ProjectTeams.class);
 
         assertThat(readSettings.getBaseUrl()).isEqualTo(settings.getBaseUrl());
         assertThat(readSettings.getProjectKey()).isEqualTo(settings.getProjectKey());
@@ -56,7 +56,7 @@ class AppIntegrationTest {
         options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
         
         Path customOutput = tempDir.resolve("custom-output.yml");
-        YamlWriteUtils.writeYaml(
+        SnakeYamlWriteUtils.writeYaml(
                 settings,
                 IssueTrackerSettings.class,
                 typeDescription,
